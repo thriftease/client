@@ -17,6 +17,15 @@
             "source.convertImportFormat": "explicit"
         }
     },
+    "[javascript]": {
+        "editor.formatOnSave": true,
+        "editor.codeActionsOnSave": {
+            "source.fixAll": "explicit",
+            "source.organizeImports": "explicit",
+            "source.unusedImports": "always",
+            "source.convertImportFormat": "explicit"
+        }
+    },
     "[css]": {
         "editor.formatOnSave": true,
         "editor.codeActionsOnSave": {
