@@ -1,0 +1,7 @@
+{
+  "name": "thriftease-client",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "vue-vite"
+}
