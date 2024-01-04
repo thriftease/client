@@ -1,12 +1,13 @@
 // apollo.config.js
+require("dotenv").config();
 module.exports = {
   client: {
     service: {
       name: 'thriftease',
       // URL to the GraphQL API
-      url: 'http://127.0.0.1:8000/graphql',
+      url: process.env.API_URL,
     },
-    // Files processed by the extension
+    // Files processed by the extPension
     includes: [
       'src/**/*.vue',
       'src/**/*.js',
