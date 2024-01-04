@@ -1,5 +1,6 @@
-import { apollo } from "@/utils/apollo";
+import apollo from "@/utils/apollo";
 
 export {
     apollo
 };
+

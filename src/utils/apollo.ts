@@ -15,5 +15,5 @@ const apollo = new ApolloClient({
     cache,
 });
 
-export { apollo };
+export default apollo;
 
