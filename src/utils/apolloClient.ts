@@ -23,10 +23,10 @@ const i18nLink = new ApolloLink((operation, forward) => {
 });
 
 // Create the apollo client
-const apollo = new ApolloClient({
+const apolloClient = new ApolloClient({
     link: i18nLink.concat(httpLink),
     cache,
 });
 
-export default apollo;
+export default apolloClient;
 
