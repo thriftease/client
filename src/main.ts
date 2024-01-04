@@ -26,6 +26,10 @@ import './theme/variables.css';
 import { apolloClient, i18nClient } from '@/utils';
 import { DefaultApolloClient } from '@vue/apollo-composable';
 
+import { createPinia } from 'pinia';
+
+const pinia = createPinia();
+
 const app = createApp({
   setup() {
     provide(DefaultApolloClient, apolloClient);
@@ -34,6 +38,7 @@ const app = createApp({
   render: () => h(App),
 })
   .use(i18nClient)
+  .use(pinia)
   .use(IonicVue)
   .use(router);
 

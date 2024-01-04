@@ -1,0 +1,7 @@
+schema: http://127.0.0.1:8000/graphql # Replace with your GraphQL endpoint
+generates:
+  src/types/graphql.d.ts:
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-vue-apollo
