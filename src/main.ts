@@ -23,16 +23,17 @@ import '@ionic/vue/css/text-transformation.css';
 /* Theme variables */
 import './theme/variables.css';
 
-import { apollo } from '@/utils';
+import { apolloClient, i18nClient } from '@/utils';
 import { DefaultApolloClient } from '@vue/apollo-composable';
 
 const app = createApp({
   setup() {
-    provide(DefaultApolloClient, apollo);
+    provide(DefaultApolloClient, apolloClient);
   },
 
   render: () => h(App),
 })
+  .use(i18nClient)
   .use(IonicVue)
   .use(router);
 
