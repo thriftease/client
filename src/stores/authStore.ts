@@ -1,5 +1,5 @@
-import { userFragment } from "@/fragments";
-import { AuthSignInMutationPayload, AuthVerifyMutationPayload, UserType } from "@/types/graphql";
+import { errorFragment, userFragment } from "@/fragments";
+import { AuthSignInMutationPayload, AuthVerifyMutationPayload, CreateUserMutationInput, UserType } from "@/types/graphql";
 import { apolloClient } from "@/utils";
 import { ApolloError } from "@apollo/client/core";
 import { gql } from "graphql-tag";
@@ -80,6 +80,29 @@ const useAuthStore = defineStore("authStore", () => {
         }
     }
 
+    async function signUp(user: CreateUserMutationInput) {
+        try {
+            const result = await client.mutate<{ authSignUp: AuthSignInMutationPayload; }>({
+                mutation: gql`
+                    ${errorFragment}
+                    ${userFragment}
+                    mutation AuthSignUp($user: CreateUserMutationInput!) {
+                        authSignUp(input: $user) {
+                            data {...userFragment}
+                            errors {...errorFragment}
+                        }
+                    },
+                `,
+                variables: { user }
+            });
+            const data = result.data?.authSignUp;
+            return data;
+        } catch (err: any) {
+            if (err instanceof ApolloError)
+                return err;
+        }
+    }
+
     function signOut() {
         setToken();
         _signedIn.value = undefined;
@@ -89,7 +112,8 @@ const useAuthStore = defineStore("authStore", () => {
         signIn,
         verify,
         signOut,
-        signedIn
+        signedIn,
+        signUp
     };
 });
 
