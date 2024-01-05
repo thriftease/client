@@ -1,35 +1,95 @@
-import { AuthSignInMutationPayload } from "@/types/graphql";
+import { userFragment } from "@/fragments";
+import { AuthSignInMutationPayload, AuthVerifyMutationPayload, UserType } from "@/types/graphql";
+import { apolloClient } from "@/utils";
 import { ApolloError } from "@apollo/client/core";
-import { useApolloClient } from '@vue/apollo-composable';
 import { gql } from "graphql-tag";
 import { defineStore } from "pinia";
+import { computed, ref } from "vue";
 
 const useAuthStore = defineStore("authStore", () => {
-    const { client } = useApolloClient();
+    const client = apolloClient;
+    const token_key = "auth_token";
 
-    async function signIn(email: string, password: string) {
+    const _signedIn = ref<UserType | null>();
+    const signedIn = computed(() => _signedIn.value);
+
+    function setToken(token?: string, rememberMe?: boolean) {
+        if (!token) {
+            sessionStorage.removeItem(token_key);
+            localStorage.removeItem(token_key);
+            return;
+        }
+        if (rememberMe) {
+            localStorage.setItem(token_key, token);
+            sessionStorage.removeItem(token_key);
+        }
+        else {
+            sessionStorage.setItem(token_key, token);
+            localStorage.removeItem(token_key);
+        }
+    }
+
+    function getToken() {
+        return sessionStorage.getItem(token_key) ?? localStorage.getItem(token_key);
+    }
+
+    async function signIn(email: string, password: string, rememberMe?: boolean) {
         try {
             const result = await client.mutate<{ authSignIn: AuthSignInMutationPayload; }>({
                 mutation: gql`
+                    ${userFragment}
                     mutation AuthSignIn($email: String!, $password: String!) {
                         authSignIn(email: $email, password: $password) {
-                            token, user {
-                                id, email, fullName
-                            }
+                            token, user {...userFragment}
                         }
                     },
                 `,
                 variables: { email, password }
             });
-            return result.data?.authSignIn;
+            const data = result.data?.authSignIn;
+            setToken(data?.token, rememberMe);
+            _signedIn.value = data?.user;
+            return data;
         } catch (err: any) {
             if (err instanceof ApolloError)
                 return err;
         }
     }
 
+    async function verify(token?: string | null) {
+        if (!token) token = getToken();
+        if (!token) return;
+        try {
+            const result = await client.mutate<{ authVerify: AuthVerifyMutationPayload; }>({
+                mutation: gql`
+                    ${userFragment}
+                    mutation AuthVerify($token: String!) {
+                        authVerify(token: $token) {
+                            user {...userFragment}
+                        }
+                    },
+                `,
+                variables: { token }
+            });
+            const data = result.data?.authVerify;
+            _signedIn.value = data?.user;
+            return data;
+        } catch (err: any) {
+            if (err instanceof ApolloError)
+                return err;
+        }
+    }
+
+    function signOut() {
+        setToken();
+        _signedIn.value = undefined;
+    }
+
     return {
-        signIn
+        signIn,
+        verify,
+        signOut,
+        signedIn
     };
 });
 
