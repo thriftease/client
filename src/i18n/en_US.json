@@ -1,3 +1,7 @@
 {
-    
+    "thriftEase": "ThriftEase",
+    "signIn": "Sign in",
+    "submit": "Submit",
+    "email": "Email",
+    "password": "Password"
 }

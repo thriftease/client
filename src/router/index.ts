@@ -12,10 +12,21 @@ const routes: Array<RouteRecordRaw> = [
     redirect: '/dashboard/Inbox'
   },
   {
-    path: '/auth/sign-in',
-    name: "auth-sign-in",
+    path: '/auth',
     meta: { authed: false },
     component: () => import('@/views/AuthPage.vue'),
+    children: [
+      {
+        path: "sign-in",
+        name: "auth-sign-in",
+        component: () => import('@/views/auth/SignInPage.vue'),
+      },
+      {
+        path: "sign-up",
+        name: "auth-sign-up",
+        component: () => import('@/views/auth/SignUpPage.vue'),
+      },
+    ]
   },
   {
     path: '/dashboard/:id',
