@@ -2,9 +2,9 @@ import en_US from "@/i18n/en_US.json";
 import { createI18n } from "vue-i18n";
 
 const i18nClient = createI18n({
-    fallbackLocale: 'en_US',
+    fallbackLocale: 'en-US',
     messages: {
-        en_US: { ...en_US },
+        "en-US": { ...en_US },
     }
 });
 
